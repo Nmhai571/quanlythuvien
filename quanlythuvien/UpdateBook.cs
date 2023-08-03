@@ -156,7 +156,7 @@ namespace quanlythuvien
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    connection.Open();
+                     connection.Open();
 
                     using (SqlCommand command = new SqlCommand("UpdateBook", connection))
                     {

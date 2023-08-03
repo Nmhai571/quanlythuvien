@@ -51,24 +51,11 @@ create table Roles
 	TenRole nvarchar(30),
 	primary key (Id)
 )
-
-create table KHACHHANG
-(
-	Id int identity(1,1),
-	HoTen nvarchar(30) not null, 
-	NgaySinh datetime, 
-	Phone char(10), 
-	primary key (Id)
-
-)
-
-
 create table HOADONBANHANG
 (
 	Id int identity(1,1),
 	NgayXuat datetime,
 	IdNhanVien int,
-	IdKhachHang int,
 	primary key (Id)
 )
 
@@ -91,6 +78,7 @@ create table HOADONNNHAPHANG
 	Id int identity(1,1),
 	NgayXuat datetime,
 	IdNhanVien int,
+	IdNXB int,
 	primary key (Id)
 )
 
@@ -119,14 +107,11 @@ ADD CONSTRAINT FK_SACH_NHAXUATBAN FOREIGN KEY (IdNhaXuatBan) REFERENCES NHAXUATB
 ALTER TABLE HOADONBANHANG
 ADD CONSTRAINT FK_HOADON_NHANVIEN FOREIGN KEY (IdNhanVien) REFERENCES NHANVIEN(Id)
 
-ALTER TABLE HOADONBANHANG
-ADD CONSTRAINT FK_HOADON_KHACHHANG FOREIGN KEY (IdKhachHang) REFERENCES KHACHHANG(Id)
-
-ALTER TABLE HOADONBANHANG
-ADD CONSTRAINT FK_HOADON_SACH FOREIGN KEY (IdKhachHang) REFERENCES KHACHHANG(Id)
-
 ALTER TABLE HOADONNNHAPHANG
 ADD CONSTRAINT FK_HOADON_NHAPHANG FOREIGN KEY (IdNhanVien) REFERENCES NHANVIEN(Id)
+
+ALTER TABLE HOADONNNHAPHANG
+ADD CONSTRAINT FK_HOADON_NHAPHANG_NXB FOREIGN KEY (IdNXB) REFERENCES NHAXUATBAN(Id)
 
 ALTER TABLE CHITIETHOADONNHAPHANG
 ADD CONSTRAINT FK_CHITIETNHAPHANG_HOADON FOREIGN KEY (IdHoaDonNhapHang) REFERENCES HOADONNNHAPHANG(Id)
@@ -180,21 +165,14 @@ insert into Roles(TenRole) values ('NHANVIEN');
 
 insert into NHANVIEN(HoTen, Luong, SoDienThoai, DiaChi, IdRole) values (N'Nguyễn Minh Hải', 1000000, 0938718496, N'Nha Trang', 1);
 insert into NHANVIEN(HoTen, Luong, SoDienThoai, DiaChi, IdRole) values (N'Việt Thành', 900000, 0938715246, N'Quận 1', 2);
-insert into NHANVIEN(HoTen, Luong, SoDienThoai, DiaChi, IdRole) values (N'Văn Trung', 90000000, 0938718496, N'Gò Vấp', 2);
-insert into NHANVIEN(HoTen, Luong, SoDienThoai, DiaChi, IdRole) values (N'Luân Trường', 900000, 0938718496, N'Quận 10', 2);
+insert into NHANVIEN(HoTen, Luong, SoDienThoai, DiaChi, IdRole) values (N'Văn Trung', 90000000, 0938562482, N'Gò Vấp', 2);
+insert into NHANVIEN(HoTen, Luong, SoDienThoai, DiaChi, IdRole) values (N'Luân Trường', 900000, 0938412634, N'Quận 10', 2);
 
-
-insert into KHACHHANG(HoTen, NgaySinh, Phone) values ('Nguyễn Văn A', '09/22/2006', 0856974158);
-insert into KHACHHANG(HoTen, NgaySinh, Phone) values ('Nguyễn Văn B', '09/24/2005', 0635418752);
-insert into KHACHHANG(HoTen, NgaySinh, Phone) values ('Nguyễn Văn C', '12/09/2002',0123598746);
-insert into KHACHHANG(HoTen, NgaySinh, Phone) values ('Nguyễn Văn D', '09/25/2006', 0154876235);
-insert into KHACHHANG(HoTen, NgaySinh, Phone) values ('Nguyễn Văn E', '09/30/2001', 0215462357);
-
-insert into HOADONBANHANG (NgayXuat, IdNhanVien, IdKhachHang) values ('07/31/2023', 2, 1);
-insert into HOADONBANHANG (NgayXuat, IdNhanVien, IdKhachHang) values ('04/25/2023', 2, 2);
-insert into HOADONBANHANG (NgayXuat, IdNhanVien, IdKhachHang) values ('12/02/2023', 3, 3);
-insert into HOADONBANHANG (NgayXuat, IdNhanVien, IdKhachHang) values ('10/14/2023', 4, 4);
-insert into HOADONBANHANG (NgayXuat, IdNhanVien, IdKhachHang) values ('05/16/2023', 2, 5);
+insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('07/31/2023', 2);
+insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('04/25/2023', 2);
+insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('12/02/2023', 3);
+insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('10/14/2023', 4);
+insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('05/16/2023', 2);
 
 insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (1, 1, 2, 200000);
 insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (2, 1, 1, 90000);
@@ -373,6 +351,16 @@ BEGIN
 	SELECT * FROM NHAXUATBAN WHERE Id = @Id
 END
 EXEC GetPublisherById @Id = 5; 
+
+-- create proc LoginEmployeeByPhone
+create procedure LoginEmployeeByPhone
+	@Phone  char(10)
+as
+begin
+	SET NOCOUNT ON;
+    SELECT nv.Id, nv.HoTen, nv.SoDienThoai FROM NHANVIEN nv WHERE nv.SoDienThoai = @Phone;
+end
+EXEC LoginEmployeeByPhone @Phone = '938718496'; 
 
 
 

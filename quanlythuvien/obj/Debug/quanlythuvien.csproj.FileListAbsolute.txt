@@ -11,3 +11,4 @@ D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.pdb
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.QuanLySach.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.AddBook.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.UpdateBook.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.Login.resources

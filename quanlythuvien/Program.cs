@@ -16,7 +16,7 @@ namespace quanlythuvien
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new QuanLySach());
+            Application.Run(new Login());
         }
     }
 }

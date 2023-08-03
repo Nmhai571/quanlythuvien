@@ -52,8 +52,15 @@
     <Compile Include="AddBook.Designer.cs">
       <DependentUpon>AddBook.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\BookCategoryModel.cs" />
     <Compile Include="Models\BookModel.cs" />
+    <Compile Include="Models\EmployeeModel.cs" />
     <Compile Include="Models\PublisherModel.cs" />
     <Compile Include="QuanLySach.cs">
       <SubType>Form</SubType>
@@ -71,6 +78,9 @@
     </Compile>
     <EmbeddedResource Include="AddBook.resx">
       <DependentUpon>AddBook.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="QuanLySach.resx">
       <DependentUpon>QuanLySach.cs</DependentUpon>
