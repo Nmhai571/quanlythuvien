@@ -1,0 +1,13 @@
+D:\C#\quanlythuvien\quanlythuvien\bin\Debug\quanlythuvien.exe.config
+D:\C#\quanlythuvien\quanlythuvien\bin\Debug\quanlythuvien.exe
+D:\C#\quanlythuvien\quanlythuvien\bin\Debug\quanlythuvien.pdb
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.csproj.AssemblyReference.cache
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.csproj.SuggestedBindingRedirects.cache
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.Properties.Resources.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.csproj.GenerateResource.cache
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.csproj.CoreCompileInputs.cache
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.exe
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.pdb
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.QuanLySach.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.AddBook.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.UpdateBook.resources
