@@ -93,8 +93,19 @@ create table CHITIETHOADONNHAPHANG
 	primary key (Id)
 )
 
+create table GIOHANG
+(
+	Id int identity(1,1),
+	IdSach int,
+	SoLuong int,
+	primary key(Id)
+)
+
 
 --create foreign key
+ALTER TABLE GIOHANG
+ADD CONSTRAINT FK_GIOHANG_SACH FOREIGN KEY (IdSach) REFERENCES SACH(id)
+
 ALTER TABLE NHANVIEN
 ADD CONSTRAINT FK_NV_ROLE FOREIGN KEY (IdRole) REFERENCES Roles(id)
 
@@ -174,17 +185,15 @@ insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('12/02/2023', 3);
 insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('10/14/2023', 4);
 insert into HOADONBANHANG (NgayXuat, IdNhanVien) values ('05/16/2023', 2);
 
-insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (1, 1, 2, 200000);
 insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (2, 1, 1, 90000);
 insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (3, 2, 2, 100000);
 insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (4, 3, 1, 90000);
 insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (5, 4, 1, 90000);
 insert into CHITIETHOADON(IdSach, IdHoaDon, SoLuong, TongHoaDon) values (6, 5, 1, 90000);
 
-insert into HOADONNNHAPHANG(NgayXuat, IdNhanVien) values ('08/01/2023', 1);
-insert into HOADONNNHAPHANG(NgayXuat, IdNhanVien) values ('08/01/2023', 2);
+insert into HOADONNNHAPHANG(IdNXB, NgayXuat, IdNhanVien) values (1, '08/01/2023', 1);
+insert into HOADONNNHAPHANG(IdNXB, NgayXuat, IdNhanVien) values (3, '08/01/2023', 2);
 
-insert into CHITIETHOADONNHAPHANG(IdHoaDonNhapHang, IdSach, TongHoaDon, SoLuong) values (1, 1, 1100000, 11);
 insert into CHITIETHOADONNHAPHANG(IdHoaDonNhapHang, IdSach, TongHoaDon, SoLuong) values (1, 2, 1100000, 15);
 insert into CHITIETHOADONNHAPHANG(IdHoaDonNhapHang, IdSach, TongHoaDon, SoLuong) values (2, 3, 2000000, 20);
 
@@ -265,18 +274,27 @@ CREATE PROCEDURE AddBook
     @AnhSach IMAGE
 AS
 BEGIN
-    INSERT INTO SACH (TenSach, TacGia, Gia, NamXuatBan, SoLuong, IdTheLoaiSach, IdNhaXuatBan, AnhSach)
-    VALUES (@TenSach, @TacGia, @Gia, @NamXuatBan, @SoLuong, @IdTheLoaiSach, @IdNhaXuatBan, @AnhSach);
+	IF EXISTS (SELECT 1 FROM SACH WHERE TenSach = @TenSach)
+    BEGIN
+        UPDATE SACH
+        SET SoLuong = SoLuong + @SoLuong
+        WHERE TenSach = @TenSach
+    END
+    ELSE
+    BEGIN
+        INSERT INTO SACH (TenSach, TacGia, Gia, NamXuatBan, SoLuong, IdTheLoaiSach, IdNhaXuatBan, AnhSach)
+        VALUES (@TenSach, @TacGia, @Gia, @NamXuatBan, @SoLuong, @IdTheLoaiSach, @IdNhaXuatBan, @AnhSach)
+    END
 END
 -- call proc addbook
 DECLARE @ImageData VARBINARY(MAX);
 SELECT @ImageData = (SELECT * FROM OPENROWSET(BULK 'D:\DatabaseManagementSystem\Đồ án cuối kì\Ảnh\onepiece.png', SINGLE_BLOB) AS AnhSach);
 EXEC AddBook
-    @TenSach = N'One Piece',
+    @TenSach = N'Đại Quản Gia Là Ma Hoàng',
     @TacGia = N'Eiichiro Oda',
     @Gia = 150000,
     @NamXuatBan = '2002-07-01',
-    @SoLuong = 10,
+    @SoLuong = 20,
     @IdTheLoaiSach = 1, 
     @IdNhaXuatBan = 2, 
     @AnhSach = @ImageData
@@ -317,6 +335,10 @@ BEGIN
     IF EXISTS (SELECT 1 FROM CHITIETHOADON WHERE IdSach = @BookId)
     BEGIN
         DELETE FROM CHITIETHOADON WHERE IdSach = @BookId;
+    END
+	IF EXISTS (SELECT 1 FROM CHITIETHOADONNHAPHANG WHERE IdSach = @BookId)
+    BEGIN
+		DELETE FROM CHITIETHOADONNHAPHANG WHERE IdSach = @BookId;
     END
 
     DELETE FROM SACH WHERE Id = @BookId;
@@ -361,6 +383,108 @@ begin
     SELECT nv.Id, nv.HoTen, nv.SoDienThoai FROM NHANVIEN nv WHERE nv.SoDienThoai = @Phone;
 end
 EXEC LoginEmployeeByPhone @Phone = '938718496'; 
+
+-- create proc GetEmployeeByName
+create procedure GetEmployeeByName
+	@Name  nvarchar(30)
+as
+begin
+	SET NOCOUNT ON;
+    SELECT nv.Id FROM NHANVIEN nv WHERE nv.HoTen = @Name;
+end
+
+
+
+--create proc GetChiTietHoaDonNhapHang
+CREATE PROCEDURE GetChiTietHoaDonNhaphang
+AS
+BEGIN
+    SELECT 
+        CTNH.IdHoaDonNhapHang AS MaHoaDon,
+        (Select TenSach from SACH S where CTNH.IdSach = S.Id) AS TenSach,
+		CTNH.SoLuong,
+		CTNH.TongHoaDon,
+		(Select nv.HoTen from NHANVIEN nv where nv.Id = NH.IdNhanVien) AS NhanVien,
+		(Select nxb.TenNXB from NHAXUATBAN nxb where nxb.Id = NH.IdNXB) AS NhaXuatBan,
+		NH.NgayXuat
+
+    FROM
+        CHITIETHOADONNHAPHANG AS CTNH
+    INNER JOIN
+        HOADONNNHAPHANG AS NH ON NH.Id = CTNH.IdHoaDonNhapHang;
+END
+exec GetChiTietHoaDonNhaphang
+
+CREATE PROCEDURE AddToCart
+    @SachId INT
+AS
+BEGIN
+    INSERT INTO GIOHANG (IdSach, SoLuong)
+    VALUES (@SachId, 1);
+END;
+
+-- create proc GetBooksInCart
+CREATE PROCEDURE GetBooksInCart
+AS
+BEGIN
+    SELECT GH.IdSach, S.TenSach, S.Gia, SUM(GH.SoLuong) AS SoLuong
+    FROM GIOHANG GH
+    JOIN SACH S ON GH.IdSach = S.Id
+    GROUP BY GH.IdSach, S.TenSach, S.Gia;
+END;
+exec GetBooksInCart;
+
+
+-- create proc thanhtoan
+CREATE PROCEDURE ThanhToan
+    @NhanVienId INT
+AS
+BEGIN
+    DECLARE @HoaDonId INT;
+
+    INSERT INTO HOADONBANHANG (NgayXuat, IdNhanVien)
+    VALUES (GETDATE(), @NhanVienId);
+
+    SET @HoaDonId = SCOPE_IDENTITY(); 
+
+    INSERT INTO CHITIETHOADON (IdSach, IdHoaDon, SoLuong, TongHoaDon)
+    SELECT G.IdSach, @HoaDonId, SUM(G.SoLuong), SUM(G.SoLuong * S.Gia)
+    FROM GIOHANG G
+    JOIN SACH S ON G.IdSach = S.Id
+    GROUP BY G.IdSach;
+
+    DELETE FROM GIOHANG;
+    SELECT @HoaDonId AS HoaDonId;
+END;
+exec ThanhToan @NhanVienId = 2
+
+
+-- create GetChiTietHoaDon
+CREATE PROCEDURE GetChiTietHoaDon
+    
+AS
+BEGIN
+    SELECT
+        HDBH.Id as IDHoaDon,
+        S.TenSach,
+        CTH.SoLuong,
+        S.Gia AS DonGia,
+        CTH.TongHoaDon AS ThanhTien
+        --SUM(CTH.TongHoaDon) OVER (PARTITION BY CTH.IdHoaDon) AS TongTienHoaDon
+    FROM CHITIETHOADON CTH
+	JOIN HOADONBANHANG HDBH ON HDBH.Id = CTH.IdHoaDon
+    JOIN SACH S ON CTH.IdSach = S.Id
+END;
+exec GetChiTietHoaDon  
+
+-- tạo trigger check nếu số lượng = 0 thì k cho thêm giỏ hàng
+-- phân quyền admin(all quyền) nhanvien(muasach)
+
+
+
+
+
+
 
 
 

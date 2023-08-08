@@ -1,4 +1,5 @@
-﻿using System;
+﻿using quanlythuvien.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,17 +16,33 @@ namespace quanlythuvien
 {
     public partial class UpdateBook : Form
     {
+        private readonly EmployeeModel _employeeModel;
+        private readonly BookModel _bookModel;
         string connectionString = "Data Source=LAPTOP-I9PU2NFD\\NGUYENMINHHAI;Initial Catalog=CUAHANGSACH;Integrated Security=True";
         public UpdateBook()
         {
             InitializeComponent();
         }
+        public UpdateBook(EmployeeModel employeeModel)
+        {
+            InitializeComponent();
+            _employeeModel = employeeModel;
+        }
 
+        public UpdateBook(EmployeeModel employeeModel, BookModel bookModel)
+        {
+            InitializeComponent();
+            _employeeModel = employeeModel;
+            _bookModel = bookModel;
+        }
         private void UpdateBook_Load(object sender, EventArgs e)
         {
             GetAllBookCategory();
             GetAllPublisher();
+            BidingBookData();
         }
+
+
 
         void GetAllBookCategory()
         {
@@ -79,7 +96,7 @@ namespace quanlythuvien
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            QuanLySach qlSach = new QuanLySach();
+            QuanLySach qlSach = new QuanLySach(_employeeModel);
             qlSach.Show();
             this.Hide();
         }
@@ -177,7 +194,7 @@ namespace quanlythuvien
                     }
                     connection.Close();
                 }
-                QuanLySach qlSach = new QuanLySach();
+                QuanLySach qlSach = new QuanLySach(_employeeModel);
                 qlSach.Show();
                 this.Hide();
             }
@@ -196,6 +213,85 @@ namespace quanlythuvien
             }
             Image questionImage = Image.FromFile(filePath);
             picBook.Image = questionImage;
+        }
+
+        BookCategoryModel GetCategoryById(int id)
+        {
+            BookCategoryModel bookCategoryModel = null;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("GetCategoryById", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = id;
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                bookCategoryModel = new BookCategoryModel
+                                { CategoryName = reader["TenTheLoai"].ToString() };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return bookCategoryModel;
+        }
+
+        PublisherModel GetPublisherById(int id)
+        {
+            PublisherModel publisherModel = null;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("GetPublisherById", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = id;
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                publisherModel = new PublisherModel
+                                { PublisherName = reader["TenNXB"].ToString() };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return publisherModel;
+        }
+
+        void BidingBookData()
+        {
+            BookModel bookModel = new BookModel();
+            var category = GetCategoryById(_bookModel.CategoryId);
+            var publisher = GetPublisherById(_bookModel.PublisherId);
+            MemoryStream stream = new MemoryStream(_bookModel.BookImage);
+            Image imgBook = Image.FromStream(stream);
+
+            tbIdBook.Text = _bookModel.BookId.ToString();
+            tbBookName.Text = _bookModel.BookName;
+            tbAuthor.Text = _bookModel.Author;
+            tbPrice.Text = _bookModel.Price.ToString();
+            tbQuantity.Text = _bookModel.Quantity.ToString();
+            cbBookCategory.Text = category.CategoryName;
+            cbPublisher.Text =publisher.PublisherName;
+            tbYear.Text = _bookModel.YearOfpublication.ToString();
+            picBook.Image = imgBook;
         }
     }
 }

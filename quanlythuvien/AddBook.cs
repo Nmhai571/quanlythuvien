@@ -18,17 +18,22 @@ namespace quanlythuvien
 {
     public partial class AddBook : Form
     {
+        private readonly EmployeeModel _employee;
         string connectionString = "Data Source=LAPTOP-I9PU2NFD\\NGUYENMINHHAI;Initial Catalog=CUAHANGSACH;Integrated Security=True";
         public AddBook()
         {
             InitializeComponent();
+        }
+        public AddBook(EmployeeModel employeeModel)
+        {
+            InitializeComponent();
+            _employee = employeeModel;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             openFile.ShowDialog();
             string filePath = openFile.FileName;
-            MessageBox.Show(filePath);
             if (string.IsNullOrEmpty(filePath))
             {
                 return;
@@ -39,7 +44,7 @@ namespace quanlythuvien
 
         private void button3_Click(object sender, EventArgs e)
         {
-            QuanLySach qlSach = new QuanLySach();
+            QuanLySach qlSach = new QuanLySach(_employee);
             qlSach.Show();
             this.Hide();
         }
@@ -80,11 +85,36 @@ namespace quanlythuvien
 
                         command.ExecuteNonQuery();
                     }
-                    connection.Close();
+                    string queryTaoHoaDonNhapHang = "INSERT INTO HOADONNNHAPHANG (NgayXuat, IdNhanVien, IdNXB) " +
+                                        "VALUES (GETDATE(), @IdNhanVien, @IdNhaXuatBan); " +
+                                        "SELECT SCOPE_IDENTITY()";
+
+                    using (SqlCommand command = new SqlCommand(queryTaoHoaDonNhapHang, connection))
+                    {
+                        int idNhanVien = 1;
+
+                        command.Parameters.AddWithValue("@IdNhanVien", idNhanVien);
+                        command.Parameters.AddWithValue("@IdNhaXuatBan", GetIdPubhlisherByName());
+
+                        int idHoaDonNhapHang = Convert.ToInt32(command.ExecuteScalar());
+
+                        string queryThemChiTietHoaDon = "INSERT INTO CHITIETHOADONNHAPHANG (IdHoaDonNhapHang, IdSach, SoLuong, TongHoaDon) " +
+                                                       "VALUES (@IdHoaDonNhapHang, (SELECT Id FROM SACH WHERE TenSach = @TenSach), @SoLuong, @TongHoaDon)";
+
+                        using (SqlCommand cmdChiTiet = new SqlCommand(queryThemChiTietHoaDon, connection))
+                        {
+                            cmdChiTiet.Parameters.AddWithValue("@IdHoaDonNhapHang", idHoaDonNhapHang);
+                            cmdChiTiet.Parameters.AddWithValue("@TenSach", tbBookName.Text);
+                            cmdChiTiet.Parameters.AddWithValue("@SoLuong", Int32.Parse(tbQuantity.Text));
+                            cmdChiTiet.Parameters.AddWithValue("@TongHoaDon", Int32.Parse(tbPrice.Text) * Int32.Parse(tbQuantity.Text));
+
+                            cmdChiTiet.ExecuteNonQuery();
+                        }
+                    }
+                    QuanLySach qlSach = new QuanLySach(_employee);
+                    qlSach.Show();
+                    this.Hide();
                 }
-                QuanLySach qlSach = new QuanLySach();
-                qlSach.Show();
-                this.Hide();
             }
             catch (Exception ex)
             {
@@ -138,7 +168,6 @@ namespace quanlythuvien
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error loading categories: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -186,7 +215,6 @@ namespace quanlythuvien
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.Add(new SqlParameter("@TenNXB", SqlDbType.NVarChar, 30)).Value = cbPublisher.Text;
-
                         object result = command.ExecuteScalar();
                         if (result != null && result != DBNull.Value)
                         {
@@ -202,6 +230,6 @@ namespace quanlythuvien
             }
             return pubhlisherId;
         }
-        
+
     }
 }

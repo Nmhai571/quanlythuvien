@@ -16,6 +16,8 @@ namespace quanlythuvien
 {
     public partial class QuanLySach : Form
     {
+        private EmployeeModel _employeeModel;
+        
         SqlConnection connection = new SqlConnection("Data Source=LAPTOP-I9PU2NFD\\NGUYENMINHHAI;Initial Catalog=CUAHANGSACH;Integrated Security=True");
         string connectionString = "Data Source=LAPTOP-I9PU2NFD\\NGUYENMINHHAI;Initial Catalog=CUAHANGSACH;Integrated Security=True";
         public QuanLySach()
@@ -23,10 +25,17 @@ namespace quanlythuvien
             InitializeComponent();
         }
 
+        public QuanLySach(EmployeeModel employeeModel)
+        {
+            InitializeComponent();
+            _employeeModel = employeeModel;
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             GetAllBooks();
             LoadDataBinding();
+            tbCustonmerName.Text = _employeeModel.EmployeeName;
         }
 
         public void LoadDataBinding()
@@ -58,7 +67,10 @@ namespace quanlythuvien
 
         private void btnUpdateBook_Click(object sender, EventArgs e)
         {
-            BidingDataToUpdate();
+            BookModel bookModel = new BookModel();
+            bookModel = GetBookById(Convert.ToInt32(tbId.Text));
+            UpdateBook updateBook = new UpdateBook(_employeeModel, bookModel);
+            updateBook.Show();
             this.Hide();
         }
 
@@ -101,7 +113,7 @@ namespace quanlythuvien
             {
             }
 
-            if( bookModel == null )
+            if (bookModel == null)
             {
                 return null;
             }
@@ -127,7 +139,7 @@ namespace quanlythuvien
                             if (reader.Read())
                             {
                                 bookCategoryModel = new BookCategoryModel
-                                {CategoryName = reader["TenTheLoai"].ToString()};
+                                { CategoryName = reader["TenTheLoai"].ToString() };
                             }
                         }
                     }
@@ -169,28 +181,6 @@ namespace quanlythuvien
             return publisherModel;
         }
 
-        void BidingDataToUpdate()
-        {
-            BookModel bookModel = new BookModel();
-            UpdateBook updateBook = new UpdateBook();
-            bookModel = GetBookById(Convert.ToInt32(tbId.Text));
-            var category = GetCategoryById(bookModel.CategoryId);
-            var publisher = GetPublisherById(bookModel.PublisherId);
-            MemoryStream stream = new MemoryStream(bookModel.BookImage);
-            Image imgBook = Image.FromStream(stream);
-
-            updateBook.tbIdBook.Text = bookModel.BookId.ToString();
-            updateBook.tbBookName.Text = bookModel.BookName;
-            updateBook.tbAuthor.Text = bookModel.Author;
-            updateBook.tbPrice.Text = bookModel.Price.ToString();
-            updateBook.tbQuantity.Text = bookModel.Quantity.ToString();
-            updateBook.cbBookCategory.Text = category.CategoryName;
-            updateBook.cbPublisher.Text = publisher.PublisherName;
-            updateBook.tbYear.Text = bookModel.YearOfpublication.ToString();
-            updateBook.picBook.Image = imgBook;
-            updateBook.Show();
-        }
-
         void DeleteBook(int id)
         {
             try
@@ -208,7 +198,7 @@ namespace quanlythuvien
                     connection.Close();
                 }
                 this.Hide();
-                QuanLySach qlSach = new QuanLySach();
+                QuanLySach qlSach = new QuanLySach(_employeeModel);
                 qlSach.Show();
             }
             catch (Exception ex)
@@ -216,6 +206,85 @@ namespace quanlythuvien
             }
         }
 
-        
+        private void btnNhapHang_Click(object sender, EventArgs e)
+        {
+            HoaDonNhapHang hdnh = new HoaDonNhapHang(_employeeModel);
+            hdnh.Show();
+            this.Hide();
+        }
+
+        private void btnBuyBook_Click(object sender, EventArgs e)
+        {
+            AddToCard();
+        }
+
+        int GetEmployeeByName(string name)
+        {
+            int id = 0;
+            name = tbCustonmerName.Text;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("GetEmployeeByName", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = name;
+                        object result = command.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            id = Convert.ToInt32(result);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return id;
+
+        }
+
+        void AddToCard()
+        {
+            int sachIdToAdd = Int32.Parse(tbId.Text);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("AddToCart", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@SachId", sachIdToAdd);
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        MessageBox.Show("Thêm Giỏ Hàng Thành Công");
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+            }
+            
+        }
+
+        private void btnGioHang_Click(object sender, EventArgs e)
+        {
+            GioHang gh = new GioHang(_employeeModel);
+            gh.Show();
+            this.Hide();
+        }
+
+        private void btnbanhang_Click(object sender, EventArgs e)
+        {
+            HoaDonBanHang hd = new HoaDonBanHang(_employeeModel);
+            hd.Show();
+            this.Hide();
+        }
     }
 }

@@ -193,6 +193,7 @@
             // 
             // btnChooseImage
             // 
+            this.btnChooseImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnChooseImage.Location = new System.Drawing.Point(485, 474);
             this.btnChooseImage.Name = "btnChooseImage";
             this.btnChooseImage.Size = new System.Drawing.Size(129, 49);
@@ -203,6 +204,7 @@
             // 
             // button2
             // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Location = new System.Drawing.Point(485, 538);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(128, 49);
@@ -213,6 +215,7 @@
             // 
             // button3
             // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.Location = new System.Drawing.Point(488, 599);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(126, 49);

@@ -12,3 +12,6 @@ D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.QuanLySach.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.AddBook.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.UpdateBook.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.Login.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.HoaDonNhapHang.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.GioHang.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.HoaDonBanHang.resources

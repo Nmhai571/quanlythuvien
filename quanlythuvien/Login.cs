@@ -34,7 +34,7 @@ namespace quanlythuvien
         EmployeeModel SignIn(string phone)
         {
             EmployeeModel employee = null;
-            QuanLySach quanLySach = new QuanLySach();
+            
 
             try
             {
@@ -70,7 +70,8 @@ namespace quanlythuvien
             {
                 return null;
             }
-            quanLySach.tbCustonmerName.Text = employee.EmployeeName;
+            QuanLySach quanLySach = new QuanLySach(employee);
+
             quanLySach.Show();
             this.Hide();
             return employee;
