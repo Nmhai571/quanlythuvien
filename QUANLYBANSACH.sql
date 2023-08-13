@@ -253,7 +253,8 @@ BEGIN
         S.Gia AS Gia,
 		S.AnhSach as AnhSach,
         S.NamXuatBan AS NamXuatBan,
-        TL.TenTheLoai AS TenTheLoai
+        TL.TenTheLoai AS TenTheLoai,
+		S.SoLuong AS SoLuong
     FROM
         SACH AS S
     INNER JOIN
@@ -375,12 +376,14 @@ END
 EXEC GetPublisherById @Id = 5; 
 
 -- create proc LoginEmployeeByPhone
-create procedure LoginEmployeeByPhone
+create procedure  LoginEmployeeByPhone
 	@Phone  char(10)
 as
 begin
 	SET NOCOUNT ON;
-    SELECT nv.Id, nv.HoTen, nv.SoDienThoai FROM NHANVIEN nv WHERE nv.SoDienThoai = @Phone;
+    SELECT nv.Id, nv.HoTen, r.TenRole FROM NHANVIEN nv 
+	JOIN Roles r on r.Id = nv.IdRole
+	WHERE nv.SoDienThoai = @Phone;
 end
 EXEC LoginEmployeeByPhone @Phone = '938718496'; 
 
@@ -390,8 +393,12 @@ create procedure GetEmployeeByName
 as
 begin
 	SET NOCOUNT ON;
-    SELECT nv.Id FROM NHANVIEN nv WHERE nv.HoTen = @Name;
+    SELECT nv.Id, nv.HoTen, r.TenRole FROM NHANVIEN nv
+	JOIN Roles r on r.Id = nv.IdRole
+	WHERE nv.HoTen = @Name
+	
 end
+EXEC GetEmployeeByName @Name = N'Nguyễn Minh Hải'; 
 
 
 
@@ -422,6 +429,18 @@ BEGIN
     INSERT INTO GIOHANG (IdSach, SoLuong)
     VALUES (@SachId, 1);
 END;
+--create proc EditCart
+CREATE PROCEDURE EditCart
+    @IdSach int,
+	@SoLuong int
+AS
+BEGIN
+    UPDATE GIOHANG
+    SET
+        SoLuong = @SoLuong
+    WHERE
+        IdSach = @IdSach
+END
 
 -- create proc GetBooksInCart
 CREATE PROCEDURE GetBooksInCart
@@ -434,6 +453,13 @@ BEGIN
 END;
 exec GetBooksInCart;
 
+--create proce DeleteBookInCart
+CREATE PROCEDURE DeleteBookInCart
+    @BookId INT
+AS
+BEGIN
+    DELETE FROM GIOHANG WHERE GIOHANG.IdSach = @BookId;
+END
 
 -- create proc thanhtoan
 CREATE PROCEDURE ThanhToan
@@ -469,16 +495,105 @@ BEGIN
         S.TenSach,
         CTH.SoLuong,
         S.Gia AS DonGia,
-        CTH.TongHoaDon AS ThanhTien
-        --SUM(CTH.TongHoaDon) OVER (PARTITION BY CTH.IdHoaDon) AS TongTienHoaDon
+        CTH.TongHoaDon AS ThanhTien,
+		HDBH.NgayXuat AS NGAYXUAT,
+        SUM(CTH.TongHoaDon) OVER (PARTITION BY CTH.IdHoaDon) AS TongTienHoaDon,
+		NV.HoTen AS NHANVIENXUAT
     FROM CHITIETHOADON CTH
 	JOIN HOADONBANHANG HDBH ON HDBH.Id = CTH.IdHoaDon
     JOIN SACH S ON CTH.IdSach = S.Id
+	JOIN NHANVIEN NV ON NV.Id = HDBH.IdNhanVien
 END;
 exec GetChiTietHoaDon  
 
--- tạo trigger check nếu số lượng = 0 thì k cho thêm giỏ hàng
--- phân quyền admin(all quyền) nhanvien(muasach)
+--create proc SearchBooks
+CREATE PROCEDURE SearchBooks
+    @SearchTerm NVARCHAR(50)
+AS
+BEGIN
+    SELECT
+        S.Id AS IdSach,
+        S.TenSach AS TenSach,
+        S.TacGia AS TacGia,
+        S.Gia AS Gia,
+		S.AnhSach as AnhSach,
+        S.NamXuatBan AS NamXuatBan,
+        TL.TenTheLoai AS TenTheLoai,
+		S.SoLuong AS SoLuong
+    FROM SACH S
+    JOIN THELOAISACH TL ON S.IdTheLoaiSach = TL.Id
+    JOIN NHAXUATBAN NXB ON S.IdNhaXuatBan = NXB.Id
+    WHERE S.TenSach LIKE '%' + @SearchTerm + '%' OR TL.TenTheLoai LIKE '%' + @SearchTerm + '%';
+END;
+exec SearchBooks @SearchTerm = N'đại'
+
+
+CREATE FUNCTION TotalBill()
+RETURNS DECIMAL(18, 2)
+AS
+BEGIN
+    DECLARE @TotalAmount DECIMAL(18, 2);
+    
+    SELECT @TotalAmount = SUM(TongHoaDon)
+    FROM CHITIETHOADON;
+    
+    RETURN ISNULL(@TotalAmount, 0);
+END;
+SELECT dbo.TotalBill()
+
+-- tạo trigger check nếu số lượng = 0 thì không cho thêm giỏ hàng
+CREATE TRIGGER PreventAddToCart
+ON GIOHANG
+FOR INSERT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM INSERTED i
+        JOIN SACH s ON i.IdSach = s.Id
+        WHERE s.SoLuong = 0
+    )
+    BEGIN
+        RAISERROR('Số lượng sách đã hết!', 16, 1);
+        ROLLBACK TRANSACTION;
+    END;
+END;
+
+
+
+-- tạo trigger không được mua nhiều hơn số sách trong kho
+CREATE TRIGGER PreventOverPurchase
+ON CHITIETHOADON
+FOR INSERT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM INSERTED i
+        JOIN SACH s ON i.IdSach = s.Id
+        WHERE i.SoLuong > s.SoLuong
+    )
+    BEGIN
+        RAISERROR('Số lượng sách không đủ!', 16, 1);
+        ROLLBACK TRANSACTION;
+    END;
+END;
+
+
+-- tạo trigger tự động cập nhật số lượng sách sau khi đặt hàng
+CREATE TRIGGER UpdateBookQuantityAfterPurchase
+ON CHITIETHOADON
+AFTER INSERT
+AS
+BEGIN
+    UPDATE SACH
+    SET SACH.SoLuong = SACH.SoLuong - INSERTED.SoLuong
+    FROM INSERTED
+    WHERE SACH.Id = INSERTED.IdSach;
+END;
+
+
+
 
 
 

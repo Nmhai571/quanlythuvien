@@ -32,6 +32,10 @@
             this.dataGridViewGioHang = new System.Windows.Forms.DataGridView();
             this.btnThanhToan = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.tbId = new System.Windows.Forms.TextBox();
+            this.lbId = new System.Windows.Forms.Label();
+            this.btnDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewGioHang)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,7 +61,7 @@
             // 
             // btnThanhToan
             // 
-            this.btnThanhToan.Location = new System.Drawing.Point(462, 461);
+            this.btnThanhToan.Location = new System.Drawing.Point(467, 461);
             this.btnThanhToan.Name = "btnThanhToan";
             this.btnThanhToan.Size = new System.Drawing.Size(127, 44);
             this.btnThanhToan.TabIndex = 2;
@@ -75,11 +79,54 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(201, 461);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(127, 44);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Thay Đổi";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tbId
+            // 
+            this.tbId.ForeColor = System.Drawing.Color.IndianRed;
+            this.tbId.Location = new System.Drawing.Point(52, 105);
+            this.tbId.Name = "tbId";
+            this.tbId.Size = new System.Drawing.Size(68, 22);
+            this.tbId.TabIndex = 9;
+            // 
+            // lbId
+            // 
+            this.lbId.AutoSize = true;
+            this.lbId.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbId.ForeColor = System.Drawing.Color.IndianRed;
+            this.lbId.Location = new System.Drawing.Point(13, 105);
+            this.lbId.Name = "lbId";
+            this.lbId.Size = new System.Drawing.Size(27, 25);
+            this.lbId.TabIndex = 8;
+            this.lbId.Text = "id";
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(334, 461);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(127, 44);
+            this.btnDelete.TabIndex = 10;
+            this.btnDelete.Text = "Xóa ";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
             // GioHang
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(739, 517);
+            this.Controls.Add(this.btnDelete);
+            this.Controls.Add(this.tbId);
+            this.Controls.Add(this.lbId);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnThanhToan);
             this.Controls.Add(this.dataGridViewGioHang);
@@ -99,5 +146,9 @@
         private System.Windows.Forms.DataGridView dataGridViewGioHang;
         private System.Windows.Forms.Button btnThanhToan;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tbId;
+        private System.Windows.Forms.Label lbId;
+        private System.Windows.Forms.Button btnDelete;
     }
 }

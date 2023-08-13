@@ -40,6 +40,10 @@
             this.btnNhapHang = new System.Windows.Forms.Button();
             this.btnbanhang = new System.Windows.Forms.Button();
             this.btnGioHang = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbSearch = new System.Windows.Forms.TextBox();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.btnDangXuat = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,7 +92,7 @@
             this.lbId.AutoSize = true;
             this.lbId.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbId.ForeColor = System.Drawing.Color.IndianRed;
-            this.lbId.Location = new System.Drawing.Point(12, 25);
+            this.lbId.Location = new System.Drawing.Point(12, 38);
             this.lbId.Name = "lbId";
             this.lbId.Size = new System.Drawing.Size(27, 25);
             this.lbId.TabIndex = 6;
@@ -97,7 +101,7 @@
             // tbId
             // 
             this.tbId.ForeColor = System.Drawing.Color.IndianRed;
-            this.tbId.Location = new System.Drawing.Point(51, 25);
+            this.tbId.Location = new System.Drawing.Point(51, 38);
             this.tbId.Name = "tbId";
             this.tbId.Size = new System.Drawing.Size(68, 22);
             this.tbId.TabIndex = 7;
@@ -115,7 +119,7 @@
             // tbCustonmerName
             // 
             this.tbCustonmerName.ForeColor = System.Drawing.Color.IndianRed;
-            this.tbCustonmerName.Location = new System.Drawing.Point(743, 25);
+            this.tbCustonmerName.Location = new System.Drawing.Point(268, 40);
             this.tbCustonmerName.Name = "tbCustonmerName";
             this.tbCustonmerName.Size = new System.Drawing.Size(280, 22);
             this.tbCustonmerName.TabIndex = 9;
@@ -125,7 +129,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.IndianRed;
-            this.label1.Location = new System.Drawing.Point(613, 22);
+            this.label1.Location = new System.Drawing.Point(147, 39);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(115, 25);
             this.label1.TabIndex = 10;
@@ -161,11 +165,55 @@
             this.btnGioHang.UseVisualStyleBackColor = true;
             this.btnGioHang.Click += new System.EventHandler(this.btnGioHang_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.IndianRed;
+            this.label2.Location = new System.Drawing.Point(613, 40);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(106, 25);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Tìm Kiếm: ";
+            // 
+            // tbSearch
+            // 
+            this.tbSearch.ForeColor = System.Drawing.Color.IndianRed;
+            this.tbSearch.Location = new System.Drawing.Point(743, 40);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(280, 22);
+            this.tbSearch.TabIndex = 14;
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Location = new System.Drawing.Point(1029, 11);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(276, 51);
+            this.btnSearch.TabIndex = 16;
+            this.btnSearch.Text = "Tìm Kiếm";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // btnDangXuat
+            // 
+            this.btnDangXuat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDangXuat.Location = new System.Drawing.Point(17, 9);
+            this.btnDangXuat.Name = "btnDangXuat";
+            this.btnDangXuat.Size = new System.Drawing.Size(102, 23);
+            this.btnDangXuat.TabIndex = 17;
+            this.btnDangXuat.Text = "Đăng Xuất";
+            this.btnDangXuat.UseVisualStyleBackColor = true;
+            this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click);
+            // 
             // QuanLySach
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1317, 559);
+            this.ClientSize = new System.Drawing.Size(1317, 561);
+            this.Controls.Add(this.btnDangXuat);
+            this.Controls.Add(this.btnSearch);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.tbSearch);
             this.Controls.Add(this.btnGioHang);
             this.Controls.Add(this.btnbanhang);
             this.Controls.Add(this.btnNhapHang);
@@ -201,6 +249,10 @@
         private System.Windows.Forms.Button btnNhapHang;
         private System.Windows.Forms.Button btnbanhang;
         private System.Windows.Forms.Button btnGioHang;
+        private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.TextBox tbSearch;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.Button btnDangXuat;
     }
 }
 

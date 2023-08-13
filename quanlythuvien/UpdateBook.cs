@@ -194,6 +194,7 @@ namespace quanlythuvien
                     }
                     connection.Close();
                 }
+                MessageBox.Show("Sửa Thành Công");
                 QuanLySach qlSach = new QuanLySach(_employeeModel);
                 qlSach.Show();
                 this.Hide();

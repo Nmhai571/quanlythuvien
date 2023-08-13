@@ -15,3 +15,4 @@ D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.Login.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.HoaDonNhapHang.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.GioHang.resources
 D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.HoaDonBanHang.resources
+D:\C#\quanlythuvien\quanlythuvien\obj\Debug\quanlythuvien.SuaGioHang.resources

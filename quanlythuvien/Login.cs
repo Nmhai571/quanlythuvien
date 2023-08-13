@@ -55,7 +55,7 @@ namespace quanlythuvien
                                 {
                                     Id = Convert.ToInt32(reader["Id"]),
                                     EmployeeName = reader["HoTen"].ToString(),
-                                    PhoneNumber = reader["SoDienThoai"].ToString(),
+                                    Role = reader["TenRole"].ToString()
                                 };
                             }
                         }

@@ -1,13 +1,8 @@
 ﻿using quanlythuvien.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace quanlythuvien
@@ -29,6 +24,8 @@ namespace quanlythuvien
         private void HoaDonBanHang_Load(object sender, EventArgs e)
         {
             GetAllInvoiceDetails();
+            decimal totalAmount = TotalBill();
+            tbTotalBill.Text = totalAmount.ToString("0.00");
         }
 
         void GetAllInvoiceDetails()
@@ -44,40 +41,7 @@ namespace quanlythuvien
 
         }
 
-        public static List<InvoiceDetail> GetInvoiceDetails(int hoaDonId)
-        {
-            List<InvoiceDetail> invoiceDetails = new List<InvoiceDetail>();
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                using (SqlCommand command = new SqlCommand("GetChiTietHoaDon", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@HoaDonId", hoaDonId);
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            InvoiceDetail detail = new InvoiceDetail
-                            {
-                                IdHoaDon = Convert.ToInt32(reader["Id"]),
-                                TenSach = reader["TenSach"].ToString(),
-                                SoLuong = Convert.ToInt32(reader["SoLuong"]),
-                                DonGia = Convert.ToDecimal(reader["DonGia"]),
-                                ThanhTien = Convert.ToDecimal(reader["ThanhTien"])
-                            };
-                            invoiceDetails.Add(detail);
-                        }
-                    }
-                }
-
-
-                return invoiceDetails;
-            }
-        }
+        
 
         private void btnBack_Click(object sender, EventArgs e)
         {
@@ -85,5 +49,24 @@ namespace quanlythuvien
             ql.Show();
             this.Hide();
         }
+
+        public static decimal TotalBill()
+        {
+            decimal totalAmount = 0;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("SELECT dbo.TotalBill()", connection))
+                {
+                    totalAmount = Convert.ToDecimal(command.ExecuteScalar());
+                }
+            }
+
+            return totalAmount;
+        }
+
+
     }
 }

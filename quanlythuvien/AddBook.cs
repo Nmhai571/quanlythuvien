@@ -71,7 +71,10 @@ namespace quanlythuvien
 
                     using (SqlCommand command = new SqlCommand("AddBook", connection))
                     {
-                        picBook.Image.Save(stream, ImageFormat.Png);
+                        if (picBook.Image != null)
+                        {
+                            picBook.Image.Save(stream, ImageFormat.Png);
+                        }
                         command.CommandType = CommandType.StoredProcedure;
 
                         command.Parameters.Add(new SqlParameter("@TenSach", SqlDbType.NVarChar, 30)).Value = tbBookName.Text;
@@ -81,6 +84,7 @@ namespace quanlythuvien
                         command.Parameters.Add(new SqlParameter("@SoLuong", SqlDbType.Int)).Value = Int32.Parse(tbQuantity.Text);
                         command.Parameters.Add(new SqlParameter("@IdTheLoaiSach", SqlDbType.Int)).Value = GetIdCategoryByName();
                         command.Parameters.Add(new SqlParameter("@IdNhaXuatBan", SqlDbType.Int)).Value = GetIdPubhlisherByName();
+                        picBook.Image.Save(stream, ImageFormat.Png);
                         command.Parameters.Add(new SqlParameter("@AnhSach", SqlDbType.Image)).Value = stream.ToArray();
 
                         command.ExecuteNonQuery();
@@ -111,6 +115,7 @@ namespace quanlythuvien
                             cmdChiTiet.ExecuteNonQuery();
                         }
                     }
+                    MessageBox.Show("Thêm Thành Công");
                     QuanLySach qlSach = new QuanLySach(_employee);
                     qlSach.Show();
                     this.Hide();
